@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { APP_WHITE, DARK_GREY, LIGHT_GREY, NEUTRAL_GREY } from '../colors';
-import { Feather } from '@expo/vector-icons';
 import { filterCharacter } from '../api';
-import RickAndMortyLogo from '../../assets/Rick_and_Morty.svg';
+import { Feather } from '@expo/vector-icons';
+import { APP_WHITE, DARK_GREY, LIGHT_GREY, NEUTRAL_GREY } from '../colors';
+import RickAndMortyLogo from '../../assets/Rick_and_Morty.svg'
 import ProfileCard from '../components/ProfileCard';
+import { FlatList, Keyboard } from 'react-native';
 
 const ScreenContainer = styled.View`
   flex: 1;
@@ -55,19 +56,62 @@ const ResultList = styled.FlatList`
   padding-top: 10px;
 `
 
+const ErrorLabel = styled.Text`
+  color: ${NEUTRAL_GREY};
+  text-align: center;
+  margin-top: 16px;
+  font-size: 18px;
+`
+
+const LoadingIndicator = styled.ActivityIndicator`
+  margin: 12px 0;
+`
+
 const HomeScreen = () => {
 
   const [results, setResults] = useState([]);
+  const [responseInfo, setResponseInfo] = useState()
+  const [errorText, setErrorText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = () => {
+    Keyboard.dismiss();
+    setErrorText('')
+    setResults([])
+    setIsLoading(true)
+    setCurrentPage(1)
+    performSearch(searchTerm)
+  }
+
+  const handleLoadMore = () => {
+    if(currentPage < responseInfo?.pages){
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage)
+      performSearch(searchTerm, newPage)
+    }
+  }
+
+  const performSearch = (searchTerm, page) => {
+    filterCharacter(searchTerm, page)
+    .then(res => {
+      setResults(!page ? res.results : results.concat(res.results))
+      setResponseInfo(res.info)
+    })
+    .catch(e => setErrorText(e))
+    .finally(() => setIsLoading(page >= responseInfo.pages ? false : true))
+  }
 
   useEffect(() => {
-    console.log(results)
-  }, [results])
-
-  const handleSearch = (searchTerm) => {
-    filterCharacter(searchTerm)
-    .then(res => setResults(res.results))
-    .catch(e => console.log(e))
-  }
+    if(results.length > 0 && currentPage < responseInfo?.pages) {
+      console.log("LOADING");
+      setIsLoading(true)
+    }else{
+      console.log("not LOADING");
+      setIsLoading(false)
+    }
+  }, [responseInfo, results, currentPage])
 
   return(
     <ScreenContainer>
@@ -77,36 +121,41 @@ const HomeScreen = () => {
           <RickAndMortyLogo height={56} width={56}/>
         </Header>
         <SearchBar
-          onSearch={handleSearch}
+          value={searchTerm}
+          onChangeText={(text) => setSearchTerm(text)}
+          onSearch={() => handleSearch(searchTerm)}
         />
       </HeaderContainer>
       <ListContainer>
-        <ResultList
+        {errorText ? <ErrorLabel>{errorText}</ErrorLabel> : null}
+        <FlatList
           data={results}
           renderItem={({item}) => 
             <ProfileCard
               data={item}
             />
           }
+          keyExtractor={(_, index) => index+''}
+          onEndReached={handleLoadMore}
+          ListFooterComponent={() => isLoading ? <LoadingIndicator/> : null}
         />
       </ListContainer>
     </ScreenContainer>
   )
 }
 
-const SearchBar = ({onSearch}) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const SearchBar = ({onSearch, value, onChangeText}) => {
 
   return(
     <SearchBarWrapper>
       <SearchInput
-        value={searchTerm}
-        onChangeText={text => setSearchTerm(text)}
+        value={value}
+        onChangeText={onChangeText}
         placeholder="Escribe el nombre del personaje..."
         placeholderTextColor={NEUTRAL_GREY}
       />
       <SearchButton
-        onPress={() => onSearch(searchTerm)}
+        onPress={onSearch}
       >
         <Feather name='search' size={24} color={DARK_GREY} />
       </SearchButton>
