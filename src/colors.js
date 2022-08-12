@@ -1,0 +1,9 @@
+export const APP_WHITE = '#f5f5f5';
+export const LIGHT_GREY = '#dedede';
+export const NEUTRAL_GREY = '#9e9e9e';
+export const MEDIUM_GREY = '#3c3e44'
+export const MEDIUM_GREY_TRANSLUCENT = 'rgba(60, 62, 68, 0.6)'
+export const DARK_GREY = '#202329';
+export const HIGHLIGHT = '#ff9900';
+export const ALIVE_GREEN = '#54cc44';
+export const DEAD_RED = '#d63c2e';
