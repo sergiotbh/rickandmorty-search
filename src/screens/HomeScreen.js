@@ -3,11 +3,29 @@ import styled from 'styled-components';
 import { APP_WHITE, DARK_GREY, LIGHT_GREY, NEUTRAL_GREY } from '../colors';
 import { Feather } from '@expo/vector-icons';
 import { filterCharacter } from '../api';
+import RickAndMortyLogo from '../../assets/Rick_and_Morty.svg';
 
 const ScreenContainer = styled.View`
   flex: 1;
   background-color: ${APP_WHITE};
   padding: 10px;
+`
+
+const HeaderContainer = styled.View`
+  padding: 24px 12px;
+`
+
+const Header = styled.View`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px 0;
+`
+
+const HeaderTitle = styled.Text`
+  font-size: 42px;
+  font-weight: 900;
+  flex: 1;
 `
 
 const SearchButton = styled.TouchableOpacity`
@@ -43,8 +61,15 @@ const HomeScreen = () => {
 
   return(
     <ScreenContainer>
-      <SearchBar onSearch={handleSearch}/>
-      
+      <HeaderContainer>
+        <Header>
+          <HeaderTitle>Busca Perfiles de Rick y Morty</HeaderTitle>
+          <RickAndMortyLogo height={56} width={56}/>
+        </Header>
+        <SearchBar
+          onSearch={handleSearch}
+        />
+      </HeaderContainer>
     </ScreenContainer>
   )
 }
