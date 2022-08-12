@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { APP_WHITE, LIGHT_GREY, MEDIUM_GREY, NEUTRAL_GREY } from '../colors';
+import { APP_WHITE, MEDIUM_GREY, NEUTRAL_GREY } from '../colors';
 import { Feather } from '@expo/vector-icons';
 
 const CardContainer = styled.TouchableOpacity`
