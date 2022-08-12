@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { filterCharacter } from '../api';
 import { Feather } from '@expo/vector-icons';
-import { APP_WHITE, DARK_GREY, LIGHT_GREY, NEUTRAL_GREY } from '../colors';
+import { APP_WHITE, DARK_GREY, HIGHLIGHT, LIGHT_GREY, NEUTRAL_GREY } from '../colors';
 import RickAndMortyLogo from '../../assets/Rick_and_Morty.svg'
 import ProfileCard from '../components/ProfileCard';
-import { FlatList, Keyboard } from 'react-native';
+import { Keyboard } from 'react-native';
 
 const ScreenContainer = styled.View`
   flex: 1;
@@ -67,7 +67,7 @@ const LoadingIndicator = styled.ActivityIndicator`
   margin: 12px 0;
 `
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
 
   const [results, setResults] = useState([]);
   const [responseInfo, setResponseInfo] = useState()
@@ -105,10 +105,8 @@ const HomeScreen = () => {
 
   useEffect(() => {
     if(results.length > 0 && currentPage < responseInfo?.pages) {
-      console.log("LOADING");
       setIsLoading(true)
     }else{
-      console.log("not LOADING");
       setIsLoading(false)
     }
   }, [responseInfo, results, currentPage])
@@ -128,16 +126,17 @@ const HomeScreen = () => {
       </HeaderContainer>
       <ListContainer>
         {errorText ? <ErrorLabel>{errorText}</ErrorLabel> : null}
-        <FlatList
+        <ResultList
           data={results}
           renderItem={({item}) => 
             <ProfileCard
+              onPress={() => navigation.push('Profile', {profileData: item})}
               data={item}
             />
           }
           keyExtractor={(_, index) => index+''}
           onEndReached={handleLoadMore}
-          ListFooterComponent={() => isLoading ? <LoadingIndicator/> : null}
+          ListFooterComponent={() => isLoading ? <LoadingIndicator color={HIGHLIGHT}/> : null}
         />
       </ListContainer>
     </ScreenContainer>
@@ -153,6 +152,7 @@ const SearchBar = ({onSearch, value, onChangeText}) => {
         onChangeText={onChangeText}
         placeholder="Escribe el nombre del personaje..."
         placeholderTextColor={NEUTRAL_GREY}
+        selectionColor={HIGHLIGHT}
       />
       <SearchButton
         onPress={onSearch}

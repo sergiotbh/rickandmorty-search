@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { APP_WHITE, MEDIUM_GREY } from '../colors';
+import { APP_WHITE, LIGHT_GREY, MEDIUM_GREY, NEUTRAL_GREY } from '../colors';
+import { Feather } from '@expo/vector-icons';
 
 const CardContainer = styled.TouchableOpacity`
   display: flex;
@@ -24,8 +25,11 @@ const CardPhoto = styled.Image`
 `
 
 const InfoWrapper = styled.View`
-  justify-content: center;
-  padding-left: 14px;
+  flex: 1;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 14px;
 `
 
 const ProfileCard = ({data, onPress}) => {
@@ -39,7 +43,8 @@ const ProfileCard = ({data, onPress}) => {
         }}
       />
       <InfoWrapper>
-        <CardTitle>{data.name}</CardTitle>
+        <CardTitle ellipsizeMode="tail" numberOfLines={1}>{data.name}</CardTitle>
+        <Feather name='chevron-right' color={NEUTRAL_GREY} size={24}/>
       </InfoWrapper>
     </CardContainer>
   )
