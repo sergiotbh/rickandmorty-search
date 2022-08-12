@@ -77,10 +77,10 @@ const HomeScreen = ({navigation}) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = () => {
+    setIsLoading(true)
     Keyboard.dismiss();
     setErrorText('')
     setResults([])
-    setIsLoading(true)
     setCurrentPage(1)
     performSearch(searchTerm)
   }
@@ -98,9 +98,10 @@ const HomeScreen = ({navigation}) => {
     .then(res => {
       setResults(!page ? res.results : results.concat(res.results))
       setResponseInfo(res.info)
+      setIsLoading((res.info.pages === 1 || page >= responseInfo?.pages) ? false : true)
     })
     .catch(e => setErrorText(e))
-    .finally(() => setIsLoading(page >= responseInfo.pages ? false : true))
+    // .finally(() => )
   }
 
   useEffect(() => {
@@ -153,6 +154,7 @@ const SearchBar = ({onSearch, value, onChangeText}) => {
         placeholder="Escribe el nombre del personaje..."
         placeholderTextColor={NEUTRAL_GREY}
         selectionColor={HIGHLIGHT}
+        
       />
       <SearchButton
         onPress={onSearch}
