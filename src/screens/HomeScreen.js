@@ -154,7 +154,8 @@ const SearchBar = ({onSearch, value, onChangeText}) => {
         placeholder="Escribe el nombre del personaje..."
         placeholderTextColor={NEUTRAL_GREY}
         selectionColor={HIGHLIGHT}
-        
+        returnKeyType="search"
+        onSubmitEditing={onSearch}
       />
       <SearchButton
         onPress={onSearch}
