@@ -4,11 +4,11 @@ import { APP_WHITE, DARK_GREY, LIGHT_GREY, NEUTRAL_GREY } from '../colors';
 import { Feather } from '@expo/vector-icons';
 import { filterCharacter } from '../api';
 import RickAndMortyLogo from '../../assets/Rick_and_Morty.svg';
+import ProfileCard from '../components/ProfileCard';
 
 const ScreenContainer = styled.View`
   flex: 1;
   background-color: ${APP_WHITE};
-  padding: 10px;
 `
 
 const HeaderContainer = styled.View`
@@ -45,6 +45,16 @@ const SearchInput = styled.TextInput`
   padding: 10px;
 `
 
+const ListContainer = styled.View`
+  display: flex;
+  flex: 1;
+  background-color: ${DARK_GREY};
+`
+
+const ResultList = styled.FlatList`
+  padding-top: 10px;
+`
+
 const HomeScreen = () => {
 
   const [results, setResults] = useState([]);
@@ -70,6 +80,16 @@ const HomeScreen = () => {
           onSearch={handleSearch}
         />
       </HeaderContainer>
+      <ListContainer>
+        <ResultList
+          data={results}
+          renderItem={({item}) => 
+            <ProfileCard
+              data={item}
+            />
+          }
+        />
+      </ListContainer>
     </ScreenContainer>
   )
 }
